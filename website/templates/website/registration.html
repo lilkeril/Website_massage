@@ -1,0 +1,35 @@
+{% extends 'website/main.html' %}
+
+{% block registration %}
+<form>
+{#  <div class="col-md-6">#}
+{#    <label for="inputEmail4" class="form-label"></label>#}
+{#    <input type="email" class="form-control" placeholder="Email" id="inputEmail4">#}
+{#  </div>#}
+  <div class="row g-3">
+    <div class="col-md-6">
+        <input type="text" class="form-control" placeholder="Имя" aria-label="First name">
+    </div>
+      <div class="col-md-6">
+        <input type="text" class="form-control" placeholder="Фамилия" aria-label="Last name">
+        </div>
+  </div>
+    <div class="row g-4">
+        <div class="col-md-6">
+    <label for="inputEmail4" class="form-label"></label>
+    <input type="email" class="form-control" placeholder="Email" id="inputEmail4">
+    </div>
+        <div class="col-md-6">
+            <label for="inputState" class="form-label"></label>
+            <select id="inputState" class="form-select">
+                {% for elements in service %}
+                <option selected>Услуги</option>
+                    <option></option>
+                {% endfor %}
+            </select>
+        </div>
+  <div class="col-10">
+    <button type="submit" class="btn btn-primary">Записаться</button>
+  </div>
+</form>
+{% endblock %}

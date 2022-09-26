@@ -1,0 +1,39 @@
+header{
+    float: top;
+    width: 100%;
+    /*font-size: large;*/
+}
+
+body {
+    background: powderblue;
+}
+
+
+aside {
+    float: right;
+    background: bisque;
+    width: 28.3%;
+    height: 100vh;
+}
+
+
+nav .nav-link, nav .navbar-brand{
+    margin-right: 145px;
+    transition: all .6s ease;
+}
+
+
+nav .navbar-brand:hover, nav .nav-link:hover{
+    color: bisque;
+    text-decoration: none;
+    transform: scale(1.1);
+}
+
+main{
+    margin: 150px 100px 100px 100px;
+    max-width: 800px;
+    background-color: powderblue;
+}
+
+ul .dropdown-item:hover{                        /*Добавить стили для категорий*/
+}

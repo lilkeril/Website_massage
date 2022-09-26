@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from website.models import Service, Recording, User
 from .serializers import ServiceSerializer, RecordsSerializer, UserSerializer
-from .permissions import IsAdminOrReadOnly, IsOwner
+from .permissions import IsAdminOrReadOnly
 # class RecordsAPIView(APIView):
 #
 #     def get(self, request):
@@ -46,13 +46,10 @@ class ServiceViewSet(viewsets.ModelViewSet):
 class RecordsViewSet(viewsets.ModelViewSet):
     queryset = Recording.objects.all()
     serializer_class = RecordsSerializer
-    permission_classes = (IsOwner, )
+    # permission_classes = ()   Добавить ограничение только для автора
 
 
-    # @action(methods=['get'], detail=False)
-    # def customer(self, request, pk=None):
-    #     cust = Recording.objects.filter()
-    #     return Response({'cust': cust})
+
 
 
 class UserViewSet(viewsets.ModelViewSet):

@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
 from website.models import Service, Recording, User
 from .serializers import ServiceSerializer, RecordsSerializer, UserSerializer
@@ -38,33 +38,14 @@ class ServiceViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrReadOnly, )
 
 
-# class RecordsAPIView(APIView):
-#     def get(self):
-#         record = Recording.objects.all()
-#         for el in record:
-#             if el.customer ==
 class RecordsViewSet(viewsets.ModelViewSet):
     queryset = Recording.objects.all()
     serializer_class = RecordsSerializer
-    # permission_classes = ()   Добавить ограничение только для автора
-
-
-
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
     permission_classes = (IsAdminUser, )
 
+    def perform_create(self, serializer):
+        serializer.save(customer=self.request.user)
 
-
-
-
-
-
-
-
-
-
-
+    def get_queryset(self):
+        owner_queryset = self.queryset.filter(customer=self.request.user)
+        return owner_queryset

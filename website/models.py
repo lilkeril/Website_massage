@@ -48,9 +48,7 @@ class Recording(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     date_of_the_service = models.DateTimeField(unique=True)
+    service_completed = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.service} - {self.date_of_the_service}'
-
-
-

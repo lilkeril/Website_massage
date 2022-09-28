@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
@@ -36,12 +38,19 @@ class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
     permission_classes = (IsAdminOrReadOnly, )
-
-
+#В одну вьюху (удаление изменение)
+# запись удаление изменение чтениe
 class RecordsViewSet(viewsets.ModelViewSet):
     queryset = Recording.objects.all()
     serializer_class = RecordsSerializer
     permission_classes = (IsAdminUser, )
+
+    def perform_destroy(self, instance):
+        time_service = Recording.objects.get(self.request.date_of_the_service)
+        time_to_service = (time_service - datetime.datetime.now())
+        if time_to_service > 86400:
+            instance.delete()
+        print('не возможно')
 
     def perform_create(self, serializer):
         serializer.save(customer=self.request.user)
@@ -49,3 +58,9 @@ class RecordsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         owner_queryset = self.queryset.filter(customer=self.request.user)
         return owner_queryset
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (IsAdminUser, )

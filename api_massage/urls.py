@@ -4,13 +4,14 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'service', views.ServiceViewSet)
-router.register(r'record', views.RecordsViewSet)
-router.register(r'user', views.UserViewSet)
+router.register(r'records', views.RecordsViewSet)
+
 
 
 urlpatterns = [
     path('drf-auth/', include('rest_framework.urls')),
     path('auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
+    path('user/<int:pk>/', views.UserRetrieveUpdateDelete.as_view()),
     path('', include(router.urls)),
 ]

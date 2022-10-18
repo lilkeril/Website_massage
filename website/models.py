@@ -51,4 +51,4 @@ class Recording(models.Model):
     service_completed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.service} - {self.date_of_the_service}'
+        return f'{self.service} - {self.date_of_the_service} - {self.customer}'

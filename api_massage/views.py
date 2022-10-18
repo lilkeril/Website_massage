@@ -1,66 +1,45 @@
-import datetime
-
-from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework import viewsets, status
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from website.models import Service, Recording, User
 from .serializers import ServiceSerializer, RecordsSerializer, UserSerializer
-from .permissions import IsAdminOrReadOnly
-# class RecordsAPIView(APIView):
-#
-#     def get(self, request):
-#         records = Recording.objects.all()
-#         return Response({'records': RecordsSerializer(records, many=True).data})
-#
-#     def post(self, request):
-#         serializer = RecordsSerializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-#         return Response({'record': serializer.data})
-#
-#     def put(self, request, *args, **kwargs):
-#         pk = kwargs.get('pk', None)
-#         if not pk:
-#             return Response({'error': 'Method PUT not allowed'})
-#
-#         try:
-#             instance = Recording.objects.get(pk=pk)
-#         except:
-#             return Response({'error': 'Object does not exists'})
-#
-#         serializer = RecordsSerializer(data=request.data, instance=instance)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-#         return Response({'record': serializer.data})
+from .permissions import IsAdminOrReadOnly, IsOwnerOrIsAdmin, IsOwnerRecordOrIsAdmin
+
+
+class UserRetrieveUpdateDelete(APIView):
+    permission_classes = [IsOwnerOrIsAdmin]
+
+    def get(self, request, *args, **kwargs):
+        user = get_object_or_404(User, pk=kwargs.get('pk', None))
+        serializer = UserSerializer(user)
+        if request.user.is_staff:
+            users = User.objects.all()
+            serializer = UserSerializer(users, many=True)
+            return Response(serializer.data)
+        return Response(serializer.data)
+
+    def patch(self, request, *args, **kwargs):
+        user = get_object_or_404(User, pk=kwargs.get('pk', None))
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        question = get_object_or_404(User, pk=kwargs.get('pk', None))
+        question.delete()
+        return Response("User deleted", status=status.HTTP_204_NO_CONTENT)
 
 
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
-    permission_classes = (IsAdminOrReadOnly, )
-#В одну вьюху (удаление изменение)
-# запись удаление изменение чтениe
+    permission_classes = [IsAdminOrReadOnly]
+
+
 class RecordsViewSet(viewsets.ModelViewSet):
     queryset = Recording.objects.all()
     serializer_class = RecordsSerializer
-    permission_classes = (IsAdminUser, )
-
-    def perform_destroy(self, instance):
-        time_service = Recording.objects.get(self.request.date_of_the_service)
-        time_to_service = (time_service - datetime.datetime.now())
-        if time_to_service > 86400:
-            instance.delete()
-        print('не возможно')
-
-    def perform_create(self, serializer):
-        serializer.save(customer=self.request.user)
-
-    def get_queryset(self):
-        owner_queryset = self.queryset.filter(customer=self.request.user)
-        return owner_queryset
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (IsAdminUser, )
+    permission_classes = [IsOwnerRecordOrIsAdmin]

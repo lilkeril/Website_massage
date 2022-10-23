@@ -6,8 +6,6 @@ router = routers.DefaultRouter()
 router.register(r'service', views.ServiceViewSet)
 router.register(r'records', views.RecordsViewSet)
 
-
-
 urlpatterns = [
     path('drf-auth/', include('rest_framework.urls')),
     path('auth/', include('djoser.urls')),

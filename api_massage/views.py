@@ -8,7 +8,6 @@ from .permissions import IsAdminOrReadOnly, IsOwnerOrIsAdmin, \
     IsOwnerRecordOrIsAdmin
 
 
-
 class UserRetrieveUpdateDelete(APIView):
     permission_classes = [IsOwnerOrIsAdmin]
 

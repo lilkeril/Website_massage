@@ -9,7 +9,9 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 
 class RecordsSerializer(serializers.ModelSerializer):
-    customer = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    customer = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
 
     class Meta:
         model = Recording

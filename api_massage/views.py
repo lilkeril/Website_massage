@@ -4,7 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from website.models import Service, Recording, User
 from .serializers import ServiceSerializer, RecordsSerializer, UserSerializer
-from .permissions import IsAdminOrReadOnly, IsOwnerOrIsAdmin, IsOwnerRecordOrIsAdmin
+from .permissions import IsAdminOrReadOnly, IsOwnerOrIsAdmin, \
+    IsOwnerRecordOrIsAdmin
+
 
 
 class UserRetrieveUpdateDelete(APIView):

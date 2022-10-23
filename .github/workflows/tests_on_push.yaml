@@ -7,7 +7,7 @@ jobs:
   run_tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@develop
+      - uses: actions/checkout@v1
       - uses: actions/setup-python@v1
         with:
           python-version: 3.10
@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Login to docker
         run: echo ${{ secrets.DOCKER_TOKEN}} | docker login -u ${{ secrets.DOCKER_LOGIN}} --password-stdin
-      - uses: actions/checkout@develop
+      - uses: actions/checkout@v1
       - name: Build image
         run: docker build -t $LOGIN/$NAME:${GITHUB_REF:11} -f Dockerfile
       - name: Push image to docker

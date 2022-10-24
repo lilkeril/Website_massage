@@ -91,10 +91,10 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'massage',
+        'NAME': os.getenv('NAME_DB'),
         'USER': os.getenv('USER_DB'),
         'PASSWORD': os.getenv('PASSWORD_DB'),
-        'HOST': 'localhost',
+        'HOST': os.getenv('HOST_DB'),
         'PORT': '5432',
     }
 }
@@ -167,4 +167,3 @@ REST_FRAMEWORK = {
 }
 
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
-

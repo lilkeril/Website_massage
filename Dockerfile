@@ -1,9 +1,7 @@
-FROM python:3.9-alpine
-WORKDIR /WebsiteMassage_Api
-COPY ./ /WebsiteMassage_Api
-RUN apk update && pip install -r /WebsiteMassage_Api/requirements.txt --no-cache-dir
-EXPOSE 8000
-ENTRYPOINT ["python", "manage.py"]
-CMD ["makemigrations"]
-CMD ["migrate"]
-CMD ["runserver", "0.0.0.0:8000"]
+FROM python:3.10-slim-buster
+RUN python -m pip install --upgrade pip
+RUN apt-get update -y
+RUN apt-get install postgresql-client -y
+COPY requirements.txt ./requirements.txt
+RUN pip install -r requirements.txt
+COPY . /.

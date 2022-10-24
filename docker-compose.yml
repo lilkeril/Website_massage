@@ -1,14 +1,49 @@
-version: "3.9"
-
+version: "3.7"
 services:
   db:
     container_name: db
-    image: postgres
+    image: postgres:11-alpine
+    command:
+      - -c
+      - fsync=off
+      - -c
+      - synchronous_commit=off
+      - -c
+      - full_page_writes=off
+      - -c
+      - checkpoint_timeout=3600
+    networks:
+      - internal
     ports:
       - "5432:5432"
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=${NAME_DB}
-      - POSTGRES_USER=${USER_DB}
-      - POSTGRES_PASSWORD=${PASSWORD_DB}
+      POSTGRES_USER: ${USER_DB}
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: ${NAME_DB}
+      POSTGRES_PASSWORD: ${PASSWORD_DB}
+      POSTGRES_INITDB_ARGS: --no-locale
+    volumes:
+      - newdata:/var/lib/postgresql/data
+  web:
+    build: .
+    entrypoint: ["/bin/sh","-c"]
+    command:
+      - |
+        until pg_isready -d ${NAME_DB} -h ${HOST_DB} -p 5432 -U postgres; do sleep 1; done
+        python manage.py makemigrations
+        python manage.py migrate
+        python manage.py runserver 0.0.0.0:8000
+    networks:
+      - internal
+    ports:
+      - "8000:8000"
+    environment:
+      - NAME_DB=${NAME_DB}
+      - USER_DB=${USER_DB}
+      - PASSWORD_DB=${PASSWORD_DB}
+    depends_on:
+      - db
+networks:
+  internal:
+volumes:
+  newdata:
